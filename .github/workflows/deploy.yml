@@ -43,6 +43,10 @@ jobs:
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
+        with:
+          # Enable Pages (with GitHub Actions as the source) on the first run,
+          # so the repository needs no manual Settings change.
+          enablement: true
 
       - name: Build
         env:
