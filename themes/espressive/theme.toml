@@ -1,0 +1,12 @@
+name = "Espressive"
+license = "MIT"
+licenselink = "https://github.com/iammanis/esp32-overview/blob/main/LICENSE"
+description = "A clean, fast, dark-first documentation theme built for hardware reference sites. Sticky table of contents, responsive spec tables, chip cards and zero JavaScript dependencies."
+homepage = "https://github.com/iammanis/esp32-overview"
+demosite = "https://iammanis.github.io/esp32-overview/"
+tags = ["documentation", "reference", "dark", "hardware", "responsive", "no-js-dependencies"]
+features = ["responsive", "dark mode", "table of contents", "shortcodes", "search-engine friendly"]
+min_version = "0.146.0"
+
+[author]
+  name = "esp32-overview contributors"

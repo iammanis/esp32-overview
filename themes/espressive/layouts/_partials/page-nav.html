@@ -1,0 +1,25 @@
+{{- $prev := "" -}}
+{{- $next := "" -}}
+{{- if .Params.chip -}}
+  {{- $sorted := sort .Parent.Pages "Params.order" -}}
+  {{- $ids := slice -}}
+  {{- range $sorted }}{{ $ids = $ids | append .RelPermalink }}{{ end -}}
+  {{- $me := .RelPermalink -}}
+  {{- range $i, $p := $sorted -}}
+    {{- if eq $p.RelPermalink $me -}}
+      {{- if gt $i 0 }}{{ $prev = index $sorted (sub $i 1) }}{{ end -}}
+      {{- if lt (add $i 1) (len $sorted) }}{{ $next = index $sorted (add $i 1) }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if or $prev $next }}
+<nav class="page-nav" aria-label="Previous and next variant">
+  <div>
+    {{ with $prev }}<a class="page-nav-link" href="{{ .RelPermalink }}"><span>&larr; Previous</span><strong>{{ .Title }}</strong></a>{{ end }}
+  </div>
+  <div class="page-nav-right">
+    {{ with $next }}<a class="page-nav-link" href="{{ .RelPermalink }}"><span>Next &rarr;</span><strong>{{ .Title }}</strong></a>{{ end }}
+  </div>
+</nav>
+{{- end }}

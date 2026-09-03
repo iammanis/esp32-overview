@@ -1,0 +1,35 @@
+{{- $chips := hugo.Data.chips.chips -}}
+{{- range hugo.Data.chips.groups }}
+  {{- $group := . }}
+  <div class="family">
+    <div class="family-head">
+      <h3>{{ .name }}</h3>
+      <p>{{ .blurb }}</p>
+    </div>
+    <div class="chip-grid">
+      {{- range where $chips "group" $group.id }}
+        <a class="chip-card" href="{{ (printf "variants/%s/" .slug) | relURL }}">
+          <div class="chip-card-top">
+            <h4>{{ .name }}</h4>
+            {{ partial "status-badge.html" .status }}
+          </div>
+          <p class="chip-tagline">{{ .tagline }}</p>
+          <ul class="chip-facts">
+            <li><span>CPU</span><strong>{{ .coreDesc }}</strong></li>
+            <li><span>Clock</span><strong>{{ .clockDesc }}</strong></li>
+            <li><span>SRAM</span><strong>{{ .sram }}</strong></li>
+            <li><span>Radio</span><strong>{{ .radioShort }}</strong></li>
+            <li><span>GPIO</span><strong>{{ .gpio }}</strong></li>
+            <li><span>Sleep</span><strong>{{ .deepSleep }}</strong></li>
+          </ul>
+          <div class="chip-card-foot">
+            <span class="chip-price">
+              {{ with .priceFrom }}from ${{ printf "%.2f" . }}{{ else }}price TBC{{ end }}
+            </span>
+            <span class="chip-more">Details &rarr;</span>
+          </div>
+        </a>
+      {{- end }}
+    </div>
+  </div>
+{{- end }}

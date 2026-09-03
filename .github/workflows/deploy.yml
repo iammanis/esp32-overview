@@ -1,0 +1,85 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - "site/**"
+  workflow_dispatch:
+
+# Allow the GITHUB_TOKEN to deploy to Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; don't cancel an in-progress production deploy
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  HUGO_VERSION: 0.165.0
+
+jobs:
+  build:
+    name: Build with Hugo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Hugo (extended)
+        run: |
+          set -euo pipefail
+          curl -sSLo hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+          hugo version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+          TZ: UTC
+        run: |
+          hugo \
+            --gc \
+            --minify \
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          test -f public/index.html
+          test -f public/variants/index.html
+          pages=$(find public -name 'index.html' | wc -l)
+          echo "Generated $pages pages."
+          if [ "$pages" -lt 20 ]; then
+            echo "::error::Expected at least 20 pages, found $pages"
+            exit 1
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

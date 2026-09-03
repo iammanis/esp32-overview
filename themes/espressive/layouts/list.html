@@ -1,0 +1,52 @@
+{{ define "main" }}
+<div class="page-head">
+  <div class="wrap">
+    {{ partial "breadcrumb.html" . }}
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.lede }}<p class="page-lede">{{ . }}</p>{{ end }}
+  </div>
+</div>
+
+<div class="wrap doc-layout">
+  <article class="prose">
+    {{ .Content }}
+
+    {{ with .Pages }}
+      <h2 id="every-variant">Every variant in detail</h2>
+      <p>One page per SoC, each with the full specification, what it is genuinely good at and where
+         it falls down.</p>
+      <div class="chip-grid chip-grid-list">
+        {{ range sort . "Params.order" }}
+          {{ $c := index (where hugo.Data.chips.chips "id" .Params.chip) 0 }}
+          <a class="chip-card" href="{{ .RelPermalink }}">
+            <div class="chip-card-top">
+              <h4>{{ .Title }}</h4>
+              {{ with $c }}{{ partial "status-badge.html" .status }}{{ end }}
+            </div>
+            <p class="chip-tagline">{{ with $c }}{{ .tagline }}{{ end }}</p>
+            {{ with $c }}
+            <ul class="chip-facts">
+              <li><span>CPU</span><strong>{{ .coreDesc }}</strong></li>
+              <li><span>Radio</span><strong>{{ .radioShort }}</strong></li>
+              <li><span>SRAM</span><strong>{{ .sram }}</strong></li>
+              <li><span>GPIO</span><strong>{{ .gpio }}</strong></li>
+            </ul>
+            <div class="chip-card-foot">
+              <span class="chip-price">{{ with .priceFrom }}from ${{ printf "%.2f" . }}{{ else }}price TBC{{ end }}</span>
+              <span class="chip-more">Details &rarr;</span>
+            </div>
+            {{ end }}
+          </a>
+        {{ end }}
+      </div>
+    {{ end }}
+  </article>
+
+  {{ if gt (len .TableOfContents) 60 }}
+    <aside class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      {{ .TableOfContents }}
+    </aside>
+  {{ end }}
+</div>
+{{ end }}

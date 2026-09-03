@@ -1,0 +1,9 @@
+{{- $year := .Get "year" -}}
+{{- $title := .Get "title" -}}
+<li class="timeline-item">
+  <span class="timeline-year">{{ $year }}</span>
+  <div class="timeline-body">
+    <p class="timeline-title">{{ $title }}</p>
+    <div>{{ .Inner | .Page.RenderString (dict "display" "block") }}</div>
+  </div>
+</li>

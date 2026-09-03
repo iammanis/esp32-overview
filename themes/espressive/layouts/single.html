@@ -1,0 +1,26 @@
+{{ define "main" }}
+<div class="page-head">
+  <div class="wrap">
+    {{ partial "breadcrumb.html" . }}
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.lede }}<p class="page-lede">{{ . }}</p>{{ end }}
+  </div>
+</div>
+
+<div class="wrap doc-layout">
+  <article class="prose">
+    {{ with .Params.chip }}
+      {{ partial "chip-spec-panel.html" (dict "id" . "page" $) }}
+    {{ end }}
+    {{ .Content }}
+    {{ partial "page-nav.html" . }}
+  </article>
+
+  {{ if gt (len .TableOfContents) 60 }}
+    <aside class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      {{ .TableOfContents }}
+    </aside>
+  {{ end }}
+</div>
+{{ end }}

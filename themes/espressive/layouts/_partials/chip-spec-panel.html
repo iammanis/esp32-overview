@@ -1,0 +1,58 @@
+{{- $id := .id -}}
+{{- $matches := where hugo.Data.chips.chips "id" $id -}}
+{{- with $matches -}}
+  {{- $c := index . 0 -}}
+<section class="spec-panel" aria-label="{{ $c.name }} specification summary">
+  <div class="spec-panel-head">
+    <div>
+      <p class="spec-eyebrow">{{ $c.tagline }}</p>
+      <p class="spec-meta">
+        {{ partial "status-badge.html" $c.status }}
+        <span class="spec-meta-item">{{ $c.launchedFull }}</span>
+        {{ with $c.longevity }}<span class="spec-meta-item">Availability committed from {{ . }}</span>{{ end }}
+      </p>
+    </div>
+    <div class="spec-price">
+      {{ with $c.priceFrom }}
+        <span class="spec-price-value">${{ printf "%.2f" . }}</span>
+        <span class="spec-price-label">chip, from</span>
+      {{ else }}
+        <span class="spec-price-value">&mdash;</span>
+        <span class="spec-price-label">not yet priced</span>
+      {{ end }}
+    </div>
+  </div>
+
+  <dl class="spec-grid">
+    <div><dt>CPU</dt><dd>{{ $c.coreDesc }}</dd></div>
+    <div><dt>Clock</dt><dd>{{ $c.clockDesc }}</dd></div>
+    <div><dt>Low-power core</dt><dd>{{ $c.lpCore }}</dd></div>
+    <div><dt>On-chip SRAM</dt><dd>{{ $c.sram }}</dd></div>
+    <div><dt>PSRAM</dt><dd>{{ $c.psram }}</dd></div>
+    <div><dt>Flash</dt><dd>{{ $c.flash }}</dd></div>
+    <div><dt>Wi-Fi</dt><dd>{{ $c.wifi }}</dd></div>
+    <div><dt>Bluetooth</dt><dd>{{ $c.bt }}</dd></div>
+    <div><dt>802.15.4</dt><dd>{{ if $c.ieee802154 }}Yes — Thread and Zigbee{{ else }}No{{ end }}</dd></div>
+    <div><dt>GPIO</dt><dd>{{ $c.gpio }}</dd></div>
+    <div><dt>USB</dt><dd>{{ $c.usb }}</dd></div>
+    <div><dt>Deep sleep</dt><dd>{{ $c.deepSleep }}</dd></div>
+    <div><dt>Package</dt><dd>{{ $c.package }}</dd></div>
+    <div><dt>Reference dev board</dt><dd>{{ $c.devkit }}</dd></div>
+  </dl>
+
+  <div class="spec-verdict">
+    <div class="verdict verdict-good">
+      <p class="verdict-label">Stands out for</p>
+      <p>{{ $c.standout }}</p>
+    </div>
+    <div class="verdict verdict-bad">
+      <p class="verdict-label">Watch out for</p>
+      <p>{{ $c.weakness }}</p>
+    </div>
+    <div class="verdict verdict-use">
+      <p class="verdict-label">Typical designs</p>
+      <p>{{ $c.bestFor }}</p>
+    </div>
+  </div>
+</section>
+{{- end -}}

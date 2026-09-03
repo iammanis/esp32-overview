@@ -1,0 +1,520 @@
+# Master data for every current Espressif ESP32-family SoC.
+#
+# Sources: Espressif product pages and the SoC selector (espressif.com/en/products/socs),
+# the ESP-Techpedia board-selection comparison, and the individual series datasheets on
+# documentation.espressif.com. Verified September 2026. See /sources/ for detail.
+#
+# priceFrom  = Espressif's published "sample price for reference" for the cheapest orderable
+#              part number in the series, in USD. Indicative only, not a quote.
+# status     = production | sampling | co-processor
+# group      = which family block the chip belongs to on the site
+
+groups:
+  - id: classic
+    name: The original and the S-series
+    blurb: >-
+      General-purpose and multimedia parts. The original ESP32 and the S-series use Espressif's
+      Xtensa cores; the brand-new S31 moves the line to RISC-V. This is where you go for lots of
+      GPIO, displays, cameras and USB.
+  - id: c
+    name: The C-series
+    blurb: >-
+      Cost- and power-optimised RISC-V parts. Small packages, small pin counts, modern radios and
+      the lowest prices in the family. The volume workhorses for connected sensors and appliances.
+  - id: h
+    name: The H-series
+    blurb: >-
+      Wi-Fi removed on purpose. Bluetooth LE plus 802.15.4 for Thread, Zigbee and Matter, tuned for
+      single-digit microamp sleep currents and years of battery life.
+  - id: p
+    name: The P-series
+    blurb: >-
+      The radio removed instead. Raw application performance, MIPI display and camera interfaces,
+      hardware video codecs and high-speed USB. Pair one with a C-series chip for connectivity.
+  - id: e
+    name: The E-series
+    blurb: >-
+      Not a microcontroller. A radio co-processor that hangs off a Linux host over PCIe, SDIO or
+      USB and takes over the entire Wi-Fi and Bluetooth stack.
+
+chips:
+  # ---------------------------------------------------------------- classic / S
+  - id: esp32
+    name: ESP32
+    slug: esp32
+    group: classic
+    tagline: The original. Dual-core, Bluetooth Classic, Ethernet MAC.
+    arch: Xtensa LX6
+    isa: Xtensa
+    cores: 2
+    coreDesc: Dual-core Xtensa LX6
+    clock: 240
+    clockDesc: 80–240 MHz
+    lpCore: ULP co-processor (FSM), 8 MHz
+    sram: 520 KB
+    psram: Up to 2 MB in-package, 8 MB external
+    flash: Up to 4 MB in-package, 16 MB external
+    wifi: Wi-Fi 4 (2.4 GHz)
+    bt: Bluetooth 4.2 — Classic (BR/EDR) + LE
+    ieee802154: false
+    radioShort: Wi-Fi 4 + BT Classic/LE
+    gpio: 34
+    usb: None
+    usbShort: None
+    deepSleep: ~10 µA
+    package: QFN 5×5 / 6×6
+    launched: 2016
+    launchedFull: Launched September 2016
+    status: production
+    longevity: "2016-01-01"
+    priceFrom: 1.50
+    devkit: ESP32-DevKitC / PICO-KIT ($10)
+    standout: Only variant with Bluetooth Classic; built-in Ethernet MAC
+    weakness: No Wi-Fi 6, no BLE 5, highest power draw of the family
+    bestFor: Legacy designs, Bluetooth Classic audio, wired Ethernet gateways, CAN bus
+
+  - id: esp32-s2
+    name: ESP32-S2
+    slug: esp32-s2
+    group: classic
+    tagline: Wi-Fi only, native USB, lots of pins.
+    arch: Xtensa LX7
+    isa: Xtensa
+    cores: 1
+    coreDesc: Single-core Xtensa LX7
+    clock: 240
+    clockDesc: 40–240 MHz
+    lpCore: Two ULP co-processors (RISC-V + FSM, not concurrent)
+    sram: 320 KB + 16 KB RTC
+    psram: Up to 2 MB in-package, large external
+    flash: Up to 4 MB in-package, large external
+    wifi: Wi-Fi 4 (2.4 GHz)
+    bt: None
+    ieee802154: false
+    radioShort: Wi-Fi 4 only
+    gpio: 43
+    usb: USB 2.0 OTG, Full Speed (12 Mbps)
+    usbShort: OTG Full Speed
+    deepSleep: ~5–7 µA
+    package: QFN 7×7
+    launched: 2019
+    launchedFull: Announced 2019, production 2020
+    status: production
+    longevity: "2020-01-01"
+    priceFrom: 1.25
+    devkit: ESP32-S2-DevKitC-1 / DevKitM-1 ($8)
+    standout: Native USB OTG plus 14 touch channels and LCD/camera interfaces
+    weakness: No Bluetooth at all; single core; largely superseded by the S3
+    bestFor: USB HID and mass-storage devices, touch panels, Wi-Fi-only products
+
+  - id: esp32-s3
+    name: ESP32-S3
+    slug: esp32-s3
+    group: classic
+    tagline: The multimedia and edge-AI workhorse.
+    arch: Xtensa LX7
+    isa: Xtensa
+    cores: 2
+    coreDesc: Dual-core Xtensa LX7 with 128-bit SIMD
+    clock: 240
+    clockDesc: 40–240 MHz
+    lpCore: ULP co-processors (RISC-V + FSM), 17.5 MHz
+    sram: 512 KB + 16 KB RTC
+    psram: Up to 16 MB in-package, 32 MB external
+    flash: Up to 16 MB in-package, 32 MB external
+    wifi: Wi-Fi 4 (2.4 GHz)
+    bt: Bluetooth 5 (LE)
+    ieee802154: false
+    radioShort: Wi-Fi 4 + BLE 5
+    gpio: 45
+    usb: USB 2.0 OTG, Full Speed (12 Mbps)
+    usbShort: OTG Full Speed
+    deepSleep: ~7 µA
+    package: QFN 7×7
+    launched: 2020
+    launchedFull: Announced 2020, production 2021
+    status: production
+    longevity: "2020-01-01"
+    priceFrom: 1.85
+    devkit: ESP32-S3-DevKitC-1 ($15)
+    standout: SIMD vector instructions for ML, up to 16 MB PSRAM, 45 GPIOs, RMT with DMA
+    weakness: No Wi-Fi 6, no 802.15.4, no Ethernet, Xtensa toolchain
+    bestFor: Displays and LVGL interfaces, cameras, voice wake-word, on-device inference
+
+  - id: esp32-s31
+    name: ESP32-S31
+    slug: esp32-s31
+    group: classic
+    tagline: Everything, in one part. RISC-V, Wi-Fi 6, gigabit Ethernet.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 2
+    coreDesc: Dual-core RISC-V with MMU, one core with a 128-bit SIMD data path
+    clock: 320
+    clockDesc: Up to 320 MHz (6.86 CoreMark/MHz)
+    lpCore: Low-power RISC-V core, 40 MHz
+    sram: 512 KB
+    psram: External, up to 64 MB via 250 MHz 8-bit DDR
+    flash: External via Octal SPI, up to 64 MB
+    wifi: Wi-Fi 6 (2.4 GHz)
+    bt: Bluetooth 5.4 — LE (LE Audio, Mesh 1.1, Direction Finding) + Classic
+    ieee802154: true
+    radioShort: Wi-Fi 6 + BT 5.4 + 802.15.4 + 1 GbE
+    gpio: 60
+    usb: USB OTG
+    usbShort: OTG
+    deepSleep: Not yet published
+    package: QFN 8×8
+    launched: 2026
+    launchedFull: Announced March 2026, mass production July 2026
+    status: production
+    longevity: ""
+    priceFrom: 3.80
+    devkit: ESP32-S31-Korvo-1 ($59)
+    standout: The only part with Wi-Fi 6, BT 5.4 Classic+LE, 802.15.4 and 1000 Mbps Ethernet together; RAM-based PUF
+    weakness: Brand new — ecosystem, board availability and power figures are still maturing
+    bestFor: Smart-home hubs, Matter gateways, industrial HMI, LE Audio devices
+
+  # ---------------------------------------------------------------- C-series
+  - id: esp32-c2
+    name: ESP32-C2
+    slug: esp32-c2
+    group: c
+    tagline: The floor. Minimal, tiny, cheapest in the family.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single-core RISC-V
+    clock: 120
+    clockDesc: 20–120 MHz
+    lpCore: None
+    sram: 272 KB
+    psram: External only
+    flash: External only, up to 16 MB
+    wifi: Wi-Fi 4 (2.4 GHz)
+    bt: Bluetooth 5 (LE)
+    ieee802154: false
+    radioShort: Wi-Fi 4 + BLE 5
+    gpio: 14
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: <8 µA
+    package: QFN 4×4
+    launched: 2022
+    launchedFull: Production 2022 (sold as ESP8684)
+    status: production
+    longevity: "2022-01-01"
+    priceFrom: 1.00
+    devkit: ESP8684-DevKitM-1 ($9.80)
+    standout: Lowest cost and smallest footprint with a Wi-Fi and BLE radio
+    weakness: 14 GPIOs, no RMT, no MCPWM, I2C master-only, no low-power core
+    bestFor: Smart plugs, lighting, Wi-Fi dongles, high-volume price-critical designs
+
+  - id: esp32-c3
+    name: ESP32-C3
+    slug: esp32-c3
+    group: c
+    tagline: The dependable dollar chip.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single-core RISC-V
+    clock: 160
+    clockDesc: 40–160 MHz
+    lpCore: None
+    sram: 400 KB
+    psram: External only, up to 8 MB
+    flash: Up to 4 MB in-package, 16 MB external
+    wifi: Wi-Fi 4 (2.4 GHz)
+    bt: Bluetooth 5 (LE)
+    ieee802154: false
+    radioShort: Wi-Fi 4 + BLE 5
+    gpio: 22
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: ~5 µA
+    package: QFN 5×5
+    launched: 2020
+    launchedFull: Announced 2020, production 2021
+    status: production
+    longevity: "2020-01-01"
+    priceFrom: 1.00
+    devkit: ESP32-C3-DevKitM-1 ($8)
+    standout: Espressif's first RISC-V part; the most mature cheap option, with hardware ECC
+    weakness: Single core, no low-power core, no USB OTG, no Wi-Fi 6
+    bestFor: Switches and sockets, lighting, simple sensors, ESP8266 replacements
+
+  - id: esp32-c5
+    name: ESP32-C5
+    slug: esp32-c5
+    group: c
+    tagline: The only ESP32 that speaks 5 GHz.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single high-performance RISC-V core
+    clock: 240
+    clockDesc: 40–240 MHz
+    lpCore: Low-power RISC-V core, 20–48 MHz
+    sram: 384 KB + 16 KB LP
+    psram: Up to 8 MB in-package, 32 MB external
+    flash: Up to 4 MB in-package, 32 MB external
+    wifi: Dual-band Wi-Fi 6 (2.4 + 5 GHz, 802.11ax)
+    bt: Bluetooth 5 (LE)
+    ieee802154: true
+    radioShort: Dual-band Wi-Fi 6 + BLE 5 + 802.15.4
+    gpio: 29
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: ~12 µA
+    package: QFN 5×5
+    launched: 2025
+    launchedFull: Announced 2022, mass production May 2025
+    status: production
+    longevity: "2025-01-01"
+    priceFrom: 2.50
+    devkit: ESP32-C5-DevKitC-1 ($15)
+    standout: First RISC-V SoC with dual-band Wi-Fi 6; adds two CAN FD controllers
+    weakness: Priciest C-series part, 29 GPIOs, higher sleep current than the C6
+    bestFor: 5 GHz networks, gateways, POS terminals, CAN FD field devices
+
+  - id: esp32-c6
+    name: ESP32-C6
+    slug: esp32-c6
+    group: c
+    tagline: The modern default. Wi-Fi 6, Thread, Zigbee, PSA L2.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single high-performance RISC-V core
+    clock: 160
+    clockDesc: 40–160 MHz
+    lpCore: Low-power RISC-V core, 20 MHz
+    sram: 512 KB + 16 KB LP
+    psram: External only, up to 16 MB
+    flash: Up to 8 MB in-package, 16 MB external
+    wifi: Wi-Fi 6 (2.4 GHz, 802.11ax)
+    bt: Bluetooth 5.3 (LE + Mesh)
+    ieee802154: true
+    radioShort: Wi-Fi 6 + BLE 5.3 + 802.15.4
+    gpio: 30
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: 7 µA
+    package: QFN 5×5
+    launched: 2021
+    launchedFull: Announced 2021, production 2023
+    status: production
+    longevity: "2023-01-01"
+    priceFrom: 1.85
+    devkit: ESP32-C6-DevKitC-1 ($9)
+    standout: First RISC-V MCU certified to PSA Level 2; ESP-TEE, Key Manager, DPA protection, real ECC accelerator
+    weakness: 2.4 GHz only, no in-package PSRAM, no USB OTG, no Ethernet
+    bestFor: Matter devices, Thread and Zigbee nodes, battery sensors, anything security-sensitive
+
+  - id: esp32-c61
+    name: ESP32-C61
+    slug: esp32-c61
+    group: c
+    tagline: Wi-Fi 6 on a budget.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single-core RISC-V
+    clock: 160
+    clockDesc: 40–160 MHz
+    lpCore: LP peripherals and power modes (no LP core)
+    sram: 320 KB + 4 KB LP
+    psram: Up to 8 MB in-package, 32 MB external
+    flash: Up to 4 MB in-package, 32 MB external
+    wifi: Wi-Fi 6 (2.4 GHz, 802.11ax)
+    bt: Bluetooth 5 (LE)
+    ieee802154: false
+    radioShort: Wi-Fi 6 + BLE 5
+    gpio: 30
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: ~10 µA
+    package: QFN 5×5
+    launched: 2025
+    launchedFull: Production 2025
+    status: production
+    longevity: "2025-01-01"
+    priceFrom: 1.46
+    devkit: ESP32-C61 modules from $2.14
+    standout: Cheapest route to Wi-Fi 6, with an eFuse-backed ECDSA signature peripheral
+    weakness: No 802.15.4, no LP core, only one ADC channel, no RMT
+    bestFor: Cost-driven Wi-Fi 6 upgrades, adapters, smart-home devices, POS terminals
+
+  # ---------------------------------------------------------------- H-series
+  - id: esp32-h2
+    name: ESP32-H2
+    slug: esp32-h2
+    group: h
+    tagline: Mesh specialist. No Wi-Fi, by design.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single-core RISC-V
+    clock: 96
+    clockDesc: 32–96 MHz
+    lpCore: LP peripherals only
+    sram: 320 KB + 4 KB LP
+    psram: External only
+    flash: Up to 4 MB in-package, 16 MB external
+    wifi: None
+    bt: Bluetooth 5 (LE, Long Range, Mesh)
+    ieee802154: true
+    radioShort: BLE 5 + 802.15.4 (no Wi-Fi)
+    gpio: 19
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: 7 µA
+    package: QFN 4×4
+    launched: 2021
+    launchedFull: Announced 2021, production 2022
+    status: production
+    longevity: "2021-01-01"
+    priceFrom: 1.39
+    devkit: ESP32-H2-DevKitM-1 ($10)
+    standout: Thread 1.4 and Zigbee 3.0 with ECC-based secure boot at 7 µA
+    weakness: No Wi-Fi, 19 GPIOs, 96 MHz, no SD interface
+    bestFor: Thread and Zigbee end devices, Matter-over-Thread sensors, BLE mesh lighting
+
+  - id: esp32-h21
+    name: ESP32-H21
+    slug: esp32-h21
+    group: h
+    tagline: The H2, refined. 5 µA and 20 dBm.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 1
+    coreDesc: Single-core RISC-V
+    clock: 96
+    clockDesc: Up to 96 MHz
+    lpCore: LP peripherals only
+    sram: 320 KB + 128 KB ROM
+    psram: External only
+    flash: External via SPI
+    wifi: None
+    bt: Bluetooth 5 (LE), BLE 5.3 certified
+    ieee802154: true
+    radioShort: BLE 5 + 802.15.4 (no Wi-Fi)
+    gpio: 19
+    usb: USB Serial/JTAG only
+    usbShort: Serial/JTAG
+    deepSleep: 5 µA
+    package: QFN 4×4
+    launched: 2026
+    launchedFull: ESP-IDF v6.0 preview support, March 2026
+    status: sampling
+    longevity: ""
+    priceFrom: null
+    devkit: Announced; check availability
+    standout: On-chip DC-DC converter cuts receive current to ~8.2 mA; 20 dBm transmit power
+    weakness: Incremental over the H2; no Wi-Fi; no LP core; still ramping
+    bestFor: Coin-cell mesh sensors, long-range tags, building automation
+
+  - id: esp32-h4
+    name: ESP32-H4
+    slug: esp32-h4
+    group: h
+    tagline: Dual-core low power with Bluetooth 5.4.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 2
+    coreDesc: Dual-core RISC-V
+    clock: 96
+    clockDesc: Up to 96 MHz
+    lpCore: Dedicated LP domain for selected peripherals
+    sram: 384 KB (expandable PSRAM)
+    psram: Up to 4 MB
+    flash: External
+    wifi: None
+    bt: Bluetooth 5.4 (LE) — Bluetooth 6.0 certified
+    ieee802154: true
+    radioShort: BLE 5.4 + 802.15.4 (no Wi-Fi)
+    gpio: 35
+    usb: USB OTG
+    usbShort: OTG
+    deepSleep: ~7 µA
+    package: QFN
+    launched: 2026
+    launchedFull: Announced September 2024, sampling 2026
+    status: sampling
+    longevity: ""
+    priceFrom: null
+    devkit: Sampling; contact Espressif
+    standout: First Espressif part to move past BT 5.0 to 5.4; adds CAN FD and USB OTG to the H line
+    weakness: Sampling rather than volume production; no Wi-Fi
+    bestFor: LE Audio devices, remote controls with screens, smart-home hubs, indoor positioning
+
+  # ---------------------------------------------------------------- P-series
+  - id: esp32-p4
+    name: ESP32-P4
+    slug: esp32-p4
+    group: p
+    tagline: The performance part. MIPI, H.264, high-speed USB, no radio.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 2
+    coreDesc: Dual-core RISC-V with FPU and AI extensions
+    clock: 400
+    clockDesc: Up to 400 MHz
+    lpCore: Low-power RISC-V core, 40 MHz
+    sram: 768 KB L2MEM + 32 KB LP
+    psram: 16 or 32 MB in-package, up to 64 MB external
+    flash: External, up to 64 MB
+    wifi: None — use a companion chip
+    bt: None — use a companion chip
+    ieee802154: false
+    radioShort: None (wired / companion radio)
+    gpio: 55
+    usb: USB 2.0 High Speed (480 Mbps) + Full Speed OTG + Serial/JTAG
+    usbShort: OTG High Speed
+    deepSleep: ~25 µA
+    package: QFN 9×9
+    launched: 2025
+    launchedFull: Announced January 2024, production 2025
+    status: production
+    longevity: "2025-01-01"
+    priceFrom: 4.00
+    devkit: ESP32-P4-Function-EV-Board ($56)
+    standout: MIPI-DSI and CSI at 1080p, image signal processor, H.264 encoder, JPEG codec, 2D accelerator, 10/100 Ethernet, 3× TWAI
+    weakness: No radio, no in-package flash, most expensive and most power-hungry
+    bestFor: Touch HMI panels, video doorbells, network cameras, USB capture devices, robotics
+
+  # ---------------------------------------------------------------- E-series
+  - id: esp32-e22
+    name: ESP32-E22
+    slug: esp32-e22
+    group: e
+    tagline: A tri-band Wi-Fi 6E radio for a Linux host.
+    arch: RISC-V
+    isa: RISC-V
+    cores: 2
+    coreDesc: Dual-core RISC-V (radio co-processor architecture)
+    clock: 500
+    clockDesc: Up to 500 MHz
+    lpCore: Power management handled by the host
+    sram: 1 MB
+    psram: None — memory via the host
+    flash: None — firmware via the host
+    wifi: Tri-band Wi-Fi 6E (2.4 / 5 / 6 GHz), 160 MHz channels, 2×2 MU-MIMO, up to 2.4 Gbps
+    bt: Bluetooth Classic (BR/EDR) + LE 5.4
+    ieee802154: false
+    radioShort: Tri-band Wi-Fi 6E + BT Classic/LE 5.4
+    gpio: 30
+    usb: USB 2.0 (host interface)
+    usbShort: Host
+    deepSleep: Host-managed
+    package: QFN
+    launched: 2026
+    launchedFull: Announced January 2026, Wi-Fi 6E certified June 2026
+    status: co-processor
+    longevity: ""
+    priceFrom: null
+    devkit: Reference designs via Espressif
+    standout: Fastest core and only 6 GHz radio in the family; PCIe 2.1 / SDIO 3.0 host interfaces with an open-source Linux driver
+    weakness: Cannot run standalone — it is not a microcontroller. No ADC, PWM or camera interface
+    bestFor: Wi-Fi adapters and M.2 cards, set-top boxes, AR/VR accessories, high-bitrate video links

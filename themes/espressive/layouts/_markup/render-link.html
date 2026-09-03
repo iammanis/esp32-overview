@@ -1,0 +1,9 @@
+{{- $d := .Destination -}}
+{{- $external := or (strings.HasPrefix $d "http://") (strings.HasPrefix $d "https://") (strings.HasPrefix $d "mailto:") (strings.HasPrefix $d "//") -}}
+{{- /* Root-relative links authored in Markdown must be rewritten so the site works when
+       served from a subdirectory (e.g. a GitHub Pages project site). relURL leaves a
+       leading slash untouched, so trim it first. */ -}}
+{{- if and (strings.HasPrefix $d "/") (not $external) -}}
+  {{- $d = relURL (strings.TrimPrefix "/" $d) -}}
+{{- end -}}
+<a href="{{ $d }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $external }} rel="noopener"{{ end }}>{{ .Text }}</a>
