@@ -123,6 +123,10 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    # The github-pages environment's branch policy only permits deployments from main,
+    # so on feature branches run the build for validation and skip the deploy rather
+    # than letting it fail on a protection rule.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
