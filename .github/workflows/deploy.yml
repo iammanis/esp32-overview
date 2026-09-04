@@ -68,6 +68,12 @@ jobs:
             echo "::warning::Pages base_url unavailable; falling back to $BASE"
           fi
           BASE="${BASE%/}"
+
+          # actions/configure-pages reports http:// until "Enforce HTTPS" is enabled in
+          # Settings -> Pages. Absolute URLs baked into the build (canonical, og:url,
+          # sitemap, RSS) should be https regardless, so normalise the scheme here.
+          BASE=$(printf '%s' "$BASE" | sed -E 's#^http://#https://#')
+
           echo "Building with baseURL ${BASE}/"
           hugo --gc --minify --baseURL "${BASE}/"
 
