@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
-      - "site/**"
+  # Validate the build on every pull request, whatever the branch is called.
+  # The deploy job is gated on main, so pull requests build without deploying.
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 # Allow the GITHUB_TOKEN to deploy to Pages
