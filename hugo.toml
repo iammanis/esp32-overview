@@ -1,4 +1,4 @@
-baseURL = "https://iammanis.github.io/esp32-overview/"
+baseURL = "https://esp32.iammanis.com/"
 locale = "en-us"
 title = "ESP32 Overview"
 theme = "espressive"

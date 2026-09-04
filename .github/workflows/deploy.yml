@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
-      - "site/**"
+  # Validate the build on every pull request, whatever the branch is called.
+  # The deploy job is gated on main, so pull requests build without deploying.
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 # Allow the GITHUB_TOKEN to deploy to Pages
@@ -20,6 +24,9 @@ concurrency:
 
 env:
   HUGO_VERSION: 0.165.0
+  # Used only if actions/configure-pages cannot report the real base URL.
+  # Must match the custom domain configured in Settings -> Pages.
+  FALLBACK_BASE_URL: https://esp32.iammanis.com
 
 jobs:
   build:
@@ -61,11 +68,21 @@ jobs:
           set -euo pipefail
           BASE="${PAGES_BASE_URL:-}"
           if [ -z "$BASE" ]; then
-            BASE="https://iammanis.github.io/esp32-overview"
+            BASE="$FALLBACK_BASE_URL"
             echo "::warning::Pages base_url unavailable; falling back to $BASE"
           fi
+          BASE="${BASE%/}"
+
+          # actions/configure-pages reports http:// until "Enforce HTTPS" is enabled in
+          # Settings -> Pages. Absolute URLs baked into the build (canonical, og:url,
+          # sitemap, RSS) should be https regardless, so normalise the scheme here.
+          BASE=$(printf '%s' "$BASE" | sed -E 's#^http://#https://#')
+
           echo "Building with baseURL ${BASE}/"
           hugo --gc --minify --baseURL "${BASE}/"
+
+          # Hand the resolved base URL to the verify step.
+          echo "SITE_BASE_URL=${BASE}" >> "$GITHUB_ENV"
 
       - name: Verify build output
         run: |
@@ -81,15 +98,32 @@ jobs:
             exit 1
           fi
 
-          # Every in-content link must carry the Pages subpath, otherwise Markdown
-          # links 404 on a project site. Guards the render-link hook against regression.
-          if grep -rhoE 'href="/[^"]*"|href=/[^ >]*' public --include='*.html' \
-             | sed -E 's/^href="?//; s/"$//' \
-             | grep -vE '^/esp32-overview' | sort -u | grep . ; then
-            echo "::error::Found root-relative links missing the /esp32-overview prefix (see above)"
+          # Guard the link render hook against regression. The correct prefix depends on
+          # how the site is served, so derive it from the base URL rather than hardcoding:
+          #   custom domain (esp32.iammanis.com)      -> served at the root, prefix is empty
+          #   project site (…github.io/esp32-overview) -> prefix is /esp32-overview
+          PREFIX=$(printf '%s' "$SITE_BASE_URL" | sed -E 's#^[a-zA-Z]+://[^/]+##; s#/+$##')
+          echo "Expected internal link prefix: '${PREFIX:-<site root>}'"
+
+          links=$(grep -rhoE 'href="/[^"]*"|href=/[^ >]*' public --include='*.html' \
+                  | sed -E 's/^href="?//; s/"$//' | sort -u)
+
+          if [ -n "$PREFIX" ]; then
+            # Serving from a subdirectory: every root-relative link must start with it.
+            bad=$(printf '%s\n' "$links" | grep -vE "^${PREFIX}/" || true)
+            problem="root-relative links missing the ${PREFIX} prefix"
+          else
+            # Serving from the root: flag protocol-relative links and any stale subpath.
+            bad=$(printf '%s\n' "$links" | grep -E '^//|^/esp32-overview(/|$)' || true)
+            problem="malformed or stale-subpath links"
+          fi
+
+          if [ -n "$bad" ]; then
+            echo "$bad"
+            echo "::error::Found $problem (see above)"
             exit 1
           fi
-          echo "All internal links correctly prefixed."
+          echo "All internal links resolve against the configured base URL."
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -99,6 +133,10 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    # The github-pages environment's branch policy only permits deployments from main,
+    # so on feature branches run the build for validation and skip the deploy rather
+    # than letting it fail on a protection rule.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
