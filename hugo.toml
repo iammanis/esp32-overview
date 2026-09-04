@@ -1,0 +1,72 @@
+baseURL = "https://iammanis.github.io/esp32-overview/"
+locale = "en-us"
+title = "ESP32 Overview"
+theme = "espressive"
+enableRobotsTXT = true
+enableGitInfo = false
+
+# Trailing-slash-free, clean URLs
+[permalinks]
+  variants = "/variants/:slug/"
+
+[params]
+  description = "A researched reference for Espressif's ESP32 family: history, every SoC variant, specifications, pricing, development boards and real-world use cases."
+  tagline = "The complete field guide to Espressif's ESP32 family"
+  repo = "https://github.com/iammanis/esp32-overview"
+  lastResearched = "September 2026"
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+    ordered = false
+  [markup.highlight]
+    noClasses = false
+    lineNos = false
+    style = "github-dark"
+
+[menus]
+  [[menus.main]]
+    name = "History"
+    pageRef = "/history"
+    weight = 10
+  [[menus.main]]
+    name = "Variants"
+    pageRef = "/variants"
+    weight = 20
+  [[menus.main]]
+    name = "Specifications"
+    pageRef = "/specifications"
+    weight = 30
+  [[menus.main]]
+    name = "Pricing"
+    pageRef = "/pricing"
+    weight = 40
+  [[menus.main]]
+    name = "Boards"
+    pageRef = "/boards"
+    weight = 50
+  [[menus.main]]
+    name = "Use Cases"
+    pageRef = "/use-cases"
+    weight = 60
+  [[menus.main]]
+    name = "Choosing"
+    pageRef = "/choosing"
+    weight = 70
+  [[menus.main]]
+    name = "Ecosystem"
+    pageRef = "/ecosystem"
+    weight = 80
+
+[taxonomies]
+  # none needed
+
+[outputs]
+  home = ["HTML", "RSS"]
+
+[services]
+  [services.rss]
+    limit = 20

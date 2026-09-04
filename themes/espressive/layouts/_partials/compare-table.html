@@ -1,0 +1,49 @@
+{{- /* Master comparison table across every SoC. Kept deliberately compact — the
+       per-chip pages carry the full detail. */ -}}
+<div class="table-scroll" tabindex="0" role="region" aria-label="ESP32 variant comparison table, scrollable">
+  <table class="data-table compare">
+    <thead>
+      <tr>
+        <th scope="col" class="sticky-col">Variant</th>
+        <th scope="col">ISA</th>
+        <th scope="col">Cores</th>
+        <th scope="col">Clock</th>
+        <th scope="col">SRAM</th>
+        <th scope="col">Radios</th>
+        <th scope="col">GPIO</th>
+        <th scope="col">USB</th>
+        <th scope="col">Sleep</th>
+        <th scope="col">Status</th>
+        <th scope="col">From</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{- range hugo.Data.chips.chips }}
+        <tr>
+          <th scope="row" class="sticky-col">
+            <a href="{{ (printf "variants/%s/" .slug) | relURL }}">{{ .name }}</a>
+          </th>
+          <td>{{ .isa }}</td>
+          <td class="num">{{ .cores }}{{ if and .lpCore (ne .lpCore "None") }}&nbsp;+&nbsp;LP{{ end }}</td>
+          <td class="num">{{ .clock }}&nbsp;MHz</td>
+          <td class="nowrap">{{ .sram }}</td>
+          <td>{{ .radioShort }}</td>
+          <td class="num">{{ .gpio }}</td>
+          <td class="nowrap">{{ if eq .usbShort "None" }}<span class="no">&mdash;</span>{{ else }}{{ .usbShort }}{{ end }}</td>
+          <td class="num">{{ .deepSleep }}</td>
+          <td>{{ partial "status-badge.html" .status }}</td>
+          <td class="num">{{ with .priceFrom }}${{ printf "%.2f" . }}{{ else }}&mdash;{{ end }}</td>
+        </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">
+  <strong>Cores</strong> counts high-performance cores; &ldquo;+&nbsp;LP&rdquo; means a separate
+  low-power core or ULP coprocessor is also present. <strong>USB</strong> distinguishes real OTG
+  (which can implement USB device classes) from a Serial/JTAG peripheral (which cannot) &mdash; see
+  <a href="{{ "specifications/#usb-three-different-things-called-usb" | relURL }}">Specifications</a>.
+  <strong>From</strong> is Espressif's published reference sample price for the cheapest orderable part
+  number in the series and excludes flash and PSRAM options. Sleep currents are typical values, some
+  estimated rather than characterised.
+</p>

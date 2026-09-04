@@ -1,0 +1,165 @@
+{{ define "main" }}
+
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Espressif Systems <p class="eyebrow">Espressif Systems &middot; 2008 &rarr; today</p>middot; 2008 to today</p>
+    <h1>The ESP32 family,<br>documented properly.</h1>
+    <p class="hero-lede">
+      Fourteen system-on-chips, three CPU architectures, six radio protocols and a price band that
+      starts at a dollar. This is a researched, source-cited reference to all of it &mdash; what each
+      variant is actually for, what it costs, which board to buy, and how to choose.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="{{ "variants/" | relURL }}">Browse all 14 variants</a>
+      <a class="btn btn-ghost" href="{{ "choosing/" | relURL }}">Help me choose a chip</a>
+    </div>
+
+    <dl class="stat-row">
+      <div class="stat"><dt>SoC variants</dt><dd>14</dd></div>
+      <div class="stat"><dt>Chips shipped</dt><dd>1&nbsp;bn+</dd></div>
+      <div class="stat"><dt>Cheapest SoC</dt><dd>$1.00</dd></div>
+      <div class="stat"><dt>Fastest core</dt><dd>500&nbsp;MHz</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2 class="section-title">What an ESP32 actually is</h2>
+  <div class="prose prose-wide">
+    <p>
+      The ESP32 is not one chip. It is a <strong>family of low-cost microcontrollers with radios
+      built in</strong>, designed by <a href="{{ "history/" | relURL }}">Espressif Systems</a> in
+      Shanghai. Every member pairs a 32-bit CPU, on-chip SRAM, a large peripheral set and hardware
+      cryptography with at least one integrated wireless stack &mdash; usually Wi-Fi, Bluetooth LE,
+      or 802.15.4 for Thread and Zigbee.
+    </p>
+    <p>
+      That combination is why the family became ubiquitous. Before the ESP8266 arrived in 2014,
+      adding Wi-Fi to a hobby or low-volume commercial product meant a separate radio module costing
+      more than the rest of the bill of materials. Espressif collapsed the microcontroller and the
+      radio into a single part priced in <em>dollars</em>, then supported it with an open-source SDK.
+      The ESP32 followed in September 2016 and became the default answer to "how do I put this
+      device on the network?"
+    </p>
+    <p>
+      Ten years on, the family has split into clearly separated lines. The original
+      <strong>ESP32</strong> and the <strong>S-series</strong> are the general-purpose and multimedia
+      workhorses. The <strong>C-series</strong> is the cost- and power-optimised RISC-V line. The
+      <strong>H-series</strong> drops Wi-Fi entirely for ultra-low-power mesh networking. The
+      <strong>P-series</strong> drops the radio instead and goes after high-performance displays and
+      cameras. The newest <strong>E-series</strong> is not a microcontroller at all &mdash; it is a
+      radio co-processor for a Linux host.
+    </p>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2 class="section-title">The lineup at a glance</h2>
+  <p class="section-sub">
+    Every current variant, grouped by the job it was designed for. Click through for the full
+    specification, strengths and honest limitations of each.
+  </p>
+
+  {{ partial "family-groups.html" . }}
+</section>
+
+<section class="section band">
+  <div class="wrap">
+    <h2 class="section-title">Pick a starting point</h2>
+    <p class="section-sub">Nine times out of ten, one of these five answers is correct.</p>
+
+    <div class="pick-grid">
+      <a class="pick" href="{{ "variants/esp32-c6/" | relURL }}">
+        <span class="pick-tag">Start here in 2026</span>
+        <h3>ESP32-C6</h3>
+        <p>Wi-Fi 6, Bluetooth 5.3 and 802.15.4 in one part, with a low-power core and a PSA Level 2
+           security certification. The modern default for a connected device.</p>
+        <span class="pick-price">Chip from $1.85 &middot; DevKit $9</span>
+      </a>
+      <a class="pick" href="{{ "variants/esp32-s3/" | relURL }}">
+        <span class="pick-tag">Screens, cameras, audio</span>
+        <h3>ESP32-S3</h3>
+        <p>Dual 240 MHz cores with SIMD vector instructions, up to 16 MB of in-package PSRAM, USB
+           OTG and 45 GPIOs. The one everybody uses for displays and on-device inference.</p>
+        <span class="pick-price">Chip from $1.85 &middot; DevKit $15</span>
+      </a>
+      <a class="pick" href="{{ "variants/esp32-c3/" | relURL }}">
+        <span class="pick-tag">Cheapest sensible option</span>
+        <h3>ESP32-C3</h3>
+        <p>A single RISC-V core at 160 MHz with Wi-Fi and BLE 5 for a dollar. Mature, boring in the
+           best sense, and supported by everything.</p>
+        <span class="pick-price">Chip from $1.00 &middot; DevKit $8</span>
+      </a>
+      <a class="pick" href="{{ "variants/esp32-h2/" | relURL }}">
+        <span class="pick-tag">Battery mesh nodes</span>
+        <h3>ESP32-H2 / H21</h3>
+        <p>No Wi-Fi at all &mdash; deliberately. Thread, Zigbee and BLE only, at 5&ndash;7&nbsp;&micro;A
+           in deep sleep. For sensors that must run years on a coin cell.</p>
+        <span class="pick-price">Chip from $1.39 &middot; DevKit $10</span>
+      </a>
+      <a class="pick" href="{{ "variants/esp32-p4/" | relURL }}">
+        <span class="pick-tag">Serious HMI</span>
+        <h3>ESP32-P4</h3>
+        <p>400 MHz dual-core, MIPI-DSI and CSI, an image signal processor, hardware H.264 and
+           480 Mbps USB. No radio &mdash; pair it with a C6.</p>
+        <span class="pick-price">Chip from $4.00 &middot; EV board $56</span>
+      </a>
+      <a class="pick pick-alt" href="{{ "choosing/" | relURL }}">
+        <span class="pick-tag">Not sure?</span>
+        <h3>Use the decision guide</h3>
+        <p>A short set of questions &mdash; radio, power budget, display, GPIO count, certification
+           &mdash; that narrows fourteen options down to one or two.</p>
+        <span class="pick-price">Read the guide &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2 class="section-title">Explore the reference</h2>
+  <div class="card-grid">
+    <a class="card" href="{{ "history/" | relURL }}">
+      <h3>History</h3>
+      <p>From a Shanghai startup in 2008 to a billion chips shipped: the ESP8266 breakthrough, the
+         2016 launch, the STAR Market listing and the migration from Xtensa to RISC-V.</p>
+    </a>
+    <a class="card" href="{{ "variants/" | relURL }}">
+      <h3>Variants</h3>
+      <p>All fourteen SoCs side by side, plus a dedicated page for each with memory options, radios,
+         peripherals, availability status and what it is genuinely bad at.</p>
+    </a>
+    <a class="card" href="{{ "specifications/" | relURL }}">
+      <h3>Specifications</h3>
+      <p>The detail that datasheet summaries skip: USB speed classes, real SPI and I2S clocks, RMT
+         channel architecture, deep-sleep currents and the hardware security matrix.</p>
+    </a>
+    <a class="card" href="{{ "pricing/" | relURL }}">
+      <h3>Pricing</h3>
+      <p>Espressif's own reference prices for every chip, module and development kit, plus street
+         prices for third-party boards and guidance on what actually drives BOM cost.</p>
+    </a>
+    <a class="card" href="{{ "boards/" | relURL }}">
+      <h3>Boards &amp; modules</h3>
+      <p>Chip vs. module vs. dev board, the WROOM/WROVER/MINI/PICO naming scheme decoded, official
+         kits, specialty AI boards and the third-party ecosystem.</p>
+    </a>
+    <a class="card" href="{{ "use-cases/" | relURL }}">
+      <h3>Use cases</h3>
+      <p>Fifty application categories with a recommended part for each &mdash; from smart plugs and
+         Matter gateways to UVC webcams and predictive-maintenance nodes.</p>
+    </a>
+    <a class="card" href="{{ "ecosystem/" | relURL }}">
+      <h3>Ecosystem</h3>
+      <p>ESP-IDF, Arduino, MicroPython, ESPHome, Rust and Zephyr &mdash; what each is good for, and
+         a first-flash walkthrough that works on any variant.</p>
+    </a>
+    <a class="card" href="{{ "sources/" | relURL }}">
+      <h3>Sources &amp; method</h3>
+      <p>Where every number on this site came from, which claims are vendor marketing, and where the
+         published documentation contradicts itself.</p>
+    </a>
+  </div>
+</section>
+
+{{ end }}

@@ -1,0 +1,10 @@
+{{- $s := . -}}
+{{- if eq $s "production" -}}
+  <span class="badge badge-ok" title="In volume production">Production</span>
+{{- else if eq $s "sampling" -}}
+  <span class="badge badge-warn" title="Sampling or early availability">Sampling</span>
+{{- else if eq $s "co-processor" -}}
+  <span class="badge badge-info" title="Radio co-processor — requires a host">Co-processor</span>
+{{- else -}}
+  <span class="badge">{{ $s | title }}</span>
+{{- end -}}

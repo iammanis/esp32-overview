@@ -1,0 +1,109 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - "site/**"
+  workflow_dispatch:
+
+# Allow the GITHUB_TOKEN to deploy to Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; don't cancel an in-progress production deploy
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  HUGO_VERSION: 0.165.0
+
+jobs:
+  build:
+    name: Build with Hugo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Hugo (extended)
+        run: |
+          set -euo pipefail
+          curl -sSLo hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+          hugo version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # Tries to enable Pages automatically. If the token isn't allowed to create the
+      # Pages site, this step is allowed to fail and the build falls back to the
+      # baseURL in hugo.toml — so the build and artifact still get validated, and the
+      # deploy job starts working as soon as Pages is enabled in Settings.
+      - name: Configure Pages
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Build
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+          TZ: UTC
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          set -euo pipefail
+          BASE="${PAGES_BASE_URL:-}"
+          if [ -z "$BASE" ]; then
+            BASE="https://iammanis.github.io/esp32-overview"
+            echo "::warning::Pages base_url unavailable; falling back to $BASE"
+          fi
+          echo "Building with baseURL ${BASE}/"
+          hugo --gc --minify --baseURL "${BASE}/"
+
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          test -f public/index.html
+          test -f public/variants/index.html
+          test -f public/variants/esp32-c6/index.html
+
+          pages=$(find public -name 'index.html' | wc -l)
+          echo "Generated $pages pages."
+          if [ "$pages" -lt 20 ]; then
+            echo "::error::Expected at least 20 pages, found $pages"
+            exit 1
+          fi
+
+          # Every in-content link must carry the Pages subpath, otherwise Markdown
+          # links 404 on a project site. Guards the render-link hook against regression.
+          if grep -rhoE 'href="/[^"]*"|href=/[^ >]*' public --include='*.html' \
+             | sed -E 's/^href="?//; s/"$//' \
+             | grep -vE '^/esp32-overview' | sort -u | grep . ; then
+            echo "::error::Found root-relative links missing the /esp32-overview prefix (see above)"
+            exit 1
+          fi
+          echo "All internal links correctly prefixed."
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

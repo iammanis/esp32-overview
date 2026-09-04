@@ -1,0 +1,43 @@
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-about">
+      <p class="footer-brand">ESP32 Overview</p>
+      <p>{{ site.Params.description }}</p>
+      <p class="footer-note">
+        An independent, community reference. Not affiliated with, endorsed by, or sponsored by
+        Espressif Systems. ESP32, ESP8266 and Espressif are trademarks of Espressif Systems.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <p class="footer-heading">Sections</p>
+      <ul>
+        {{ range site.Menus.main }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
+        <li><a href="{{ "sources/" | relURL }}">Sources &amp; method</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links">
+      <p class="footer-heading">Official resources</p>
+      <ul>
+        <li><a href="https://www.espressif.com/en/products/socs" rel="noopener">Espressif SoC selector</a></li>
+        <li><a href="https://docs.espressif.com/projects/esp-idf/en/latest/" rel="noopener">ESP-IDF Programming Guide</a></li>
+        <li><a href="https://documentation.espressif.com/" rel="noopener">Datasheets &amp; TRMs</a></li>
+        <li><a href="https://github.com/espressif/esp-idf" rel="noopener">esp-idf on GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <p>
+      Data verified against Espressif's published documentation as of {{ site.Params.lastResearched }}.
+      Prices are Espressif's own reference sample prices and change without notice &mdash;
+      always confirm with a distributor.
+    </p>
+    <p>
+      Built with <a href="https://gohugo.io" rel="noopener">Hugo</a> {{ hugo.Version }} &middot;
+      <a href="{{ site.Params.repo }}" rel="noopener">Source on GitHub</a> &middot;
+      &copy; {{ now.Format "2006" }}
+    </p>
+  </div>
+</footer>
